@@ -22,6 +22,23 @@ sImage = pygame.image.load(scroll)
 sImage = pygame.transform.scale(sImage,(windowWidth*.30,windowHeight*.50))
 sRect = sImage.get_rect(midright=(windowWidth,windowHeight-windowHeight*.25))
 
+def walksprite(dir, posx, posy, spritenum):
+    folder = "Game_Engine/walksprites"
+
+    file = str(spritenum) + ".png"
+    full_path =  os.path.join(folder,dir, file)
+    handImage = pygame.image.load(f"{full_path}")
+
+    colorImage = pygame.Surface(handImage.get_size()).convert_alpha()
+    color = pygame.Color(0, 255, 0)
+    colorImage.fill(color)
+
+    handImage.blit(colorImage, (0,0), special_flags = pygame.BLEND_RGBA_MULT)
+
+    handImage = pygame.transform.scale(handImage, (50,50))
+    handRect = handImage.get_rect(center =(posx,posy))
+    screen.blit(handImage,handRect)
+
 def letter_choice():
     folder = "Game_Engine/letters"
 
@@ -40,7 +57,8 @@ def letter_choice():
 start_time = pygame.time.get_ticks()
 duration = 3000 
 
-
+spritenum = 0
+dir = "back"
 
 running = True
 while running:
@@ -53,6 +71,8 @@ while running:
     screen.blit(image, rect)
     screen.blit(sImage,sRect)
     letter_choice()
+    walksprite(dir, windowWidth//3, windowHeight//3, spritenum)
+    spritenum = (spritenum + 1) % 4
     pygame.display.update()
 
 pygame.quit()
