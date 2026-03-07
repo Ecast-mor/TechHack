@@ -12,11 +12,12 @@ class Customer():
         self.dir = "back"
         self.current_frame = 0
         self.animationTimer = 0
+        self.ypos = 100
 
         self.load_images() 
 
         self.image = self.animations[self.dir][0]
-        self.rect = self.image.get_rect(center=(windowWidth//2, windowHeight - 100))
+        self.rect = self.image.get_rect(center=(windowWidth//2, windowHeight - self.ypos))
 
 
     def load_images(self):
@@ -44,26 +45,33 @@ class Customer():
             self.animationTimer = 0
             self.current_frame = (self.current_frame + 1) % len(frames)
             self.image = frames[self.current_frame]
-       
+
+    def move(self):
+        if self.dir == "forward":
+            self.ypos += 20
+        else:
+            self.ypos -= 20
+        self.rect = self.image.get_rect(center=(windowWidth//2, windowHeight - self.ypos))
+    
     def draw(self):
         screen.blit(self.image, self.rect)
         
-def walksprite(dir, posx, posy, spritenum):
-    folder = "Game_Engine/walksprites"
+# def walksprite(dir, posx, posy, spritenum):
+#     folder = "Game_Engine/walksprites"
 
-    file = str(spritenum) + ".png"
-    full_path =  os.path.join(folder,dir, file)
-    handImage = pygame.image.load(f"{full_path}")
+#     file = str(spritenum) + ".png"
+#     full_path =  os.path.join(folder,dir, file)
+#     handImage = pygame.image.load(f"{full_path}")
 
-    colorImage = pygame.Surface(handImage.get_size()).convert_alpha()
-    color = pygame.Color(0, 255, 0)
-    colorImage.fill(color)
+#     colorImage = pygame.Surface(handImage.get_size()).convert_alpha()
+#     color = pygame.Color(0, 255, 0)
+#     colorImage.fill(color)
 
-    handImage.blit(colorImage, (0,0), special_flags = pygame.BLEND_RGBA_MULT)
+#     handImage.blit(colorImage, (0,0), special_flags = pygame.BLEND_RGBA_MULT)
 
-    handImage = pygame.transform.scale(handImage, (50,50))
-    handRect = handImage.get_rect(center =(posx,posy))
-    screen.blit(handImage,handRect)
+#     handImage = pygame.transform.scale(handImage, (50,50))
+#     handRect = handImage.get_rect(center =(posx,posy))
+#     screen.blit(handImage,handRect)
 
 currentWindow = pygame.display.Info()
 windowHeight, windowWidth = currentWindow.current_h, currentWindow.current_w
@@ -111,6 +119,7 @@ while running:
     screen.blit(sImage,sRect)
     letter_choice()
     customer.animate(5)
+    customer.move()
     customer.draw()
     pygame.display.update()
 
