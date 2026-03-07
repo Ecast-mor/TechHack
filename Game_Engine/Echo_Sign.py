@@ -6,91 +6,48 @@ pygame.init()
 
 clock = pygame.time.Clock()
 
-# class Player():
-#     def __init__(self):
-#         self.health = 100
-#         self.attack_power = 3
-#         self.speed = 5
-#         self.level = 0
+class Customer():
+    def __init__(self):
+        self.animations = {}
+        self.dir = "back"
+        self.current_frame = 0
+        self.animationTimer = 0
 
-#         self.animations = {}
-#         self.animation = "Idle"
-#         self.current_frame = 0
-#         self.animationTimer = 0
+        self.load_images() 
 
-#         self.load_images()
+        self.image = self.animations[self.dir][0]
+        self.rect = self.image.get_rect(center=(windowWidth//2, windowHeight - 100))
 
-#         self.image = self.animations[self.animation][0]
-#         self.rect = self.image.get_rect(center=(wW//2, wH//2))
-#         self.flipped = False
-#         self.facingLeft = False
 
-#         self.slash = pygame.image.load("slash.png")
-#         self.slashRect = None
+    def load_images(self):
+        folder = "Game_Engine/walksprites"
 
-#         self.attacking = False
+        for subfolder in os.listdir(folder):
+            subfolderPath = os.path.join(folder, subfolder)
 
+            if os.path.isdir(subfolderPath):
+                sprite_frames = []
+                for file in sorted(os.listdir(subfolderPath)):
+                    full_path = os.path.join(subfolderPath, file)
+                    image = pygame.image.load(full_path).convert_alpha()
+                    sprite_frames.append(image)
+
+                self.animations[subfolder] = sprite_frames
+
+    def animate(self, dt):
+        frameSpeed = 100
+        frames = self.animations[self.dir]
+
+        self.animationTimer += dt
+
+        if self.animationTimer >= frameSpeed:
+            self.animationTimer = 0
+            self.current_frame = (self.current_frame + 1) % len(frames)
+            self.image = frames[self.current_frame]
        
-#     def load_images(self):
-#         folder = "Knight_1"
-
-#         for subfolder in os.listdir(folder):
-#             subfolderPath = os.path.join(folder, subfolder)
-
-#             if os.path.isdir(subfolderPath):
-#                 sprite_frames = []
-#                 for file in sorted(os.listdir(subfolderPath)):
-#                     full_path = os.path.join(subfolderPath, file)
-#                     image = pygame.image.load(full_path).convert_alpha()
-#                     sprite_frames.append(image)
-
-#                 self.animations[subfolder] = sprite_frames
+    def draw(self):
+        screen.blit(self.image, self.rect)
         
-        
-
-#     def animate(self, dt):
-#         frameSpeed = 100
-#         frames = self.animations[self.animation]
-
-#         self.animationTimer += dt
-
-#         if self.animationTimer >= frameSpeed:
-#             self.animationTimer = 0
-#             self.current_frame = (self.current_frame + 1) % len(frames)
-#             self.image = frames[self.current_frame]
-        
-#         if self.animation.startswith("Attack"):
-#             self.attacking = False
-#             self.slashRect = None
-        
-#     def flip_animation(self):
-#              for animation_name in self.animations:
-#                 flipped_frames = []
-#                 for frame in self.animations[animation_name]:
-#                     flipped = pygame.transform.flip(frame, True, False)
-#                     flipped_frames.append(flipped)
-
-#                 self.animations[animation_name] = flipped_frames
-
-#     def draw(self):
-#         screen.blit(self.image, self.rect)
-
-
-currentWindow = pygame.display.Info()
-windowHeight, windowWidth = currentWindow.current_h, currentWindow.current_w
-screen = pygame.display.set_mode((windowWidth, windowHeight-60), pygame.SCALED)
-
-background = "Game_Engine/tavern.jpg"
-image = pygame.image.load(background)
-image = pygame.transform.scale(image,(windowWidth, windowHeight-60))
-rect = image.get_rect(midtop = (windowWidth//2,0))
-
-
-scroll = "Game_Engine/scroll.png"
-sImage = pygame.image.load(scroll)
-sImage = pygame.transform.scale(sImage,(windowWidth*.30,windowHeight*.50))
-sRect = sImage.get_rect(midright=(windowWidth,windowHeight-windowHeight*.25))
-
 def walksprite(dir, posx, posy, spritenum):
     folder = "Game_Engine/walksprites"
 
@@ -108,6 +65,21 @@ def walksprite(dir, posx, posy, spritenum):
     handRect = handImage.get_rect(center =(posx,posy))
     screen.blit(handImage,handRect)
 
+currentWindow = pygame.display.Info()
+windowHeight, windowWidth = currentWindow.current_h, currentWindow.current_w
+screen = pygame.display.set_mode((windowWidth, windowHeight-60), pygame.SCALED)
+
+background = "Game_Engine/tavern.jpg"
+image = pygame.image.load(background)
+image = pygame.transform.scale(image,(windowWidth, windowHeight-60))
+rect = image.get_rect(midtop = (windowWidth//2,0))
+
+
+scroll = "Game_Engine/scroll.png"
+sImage = pygame.image.load(scroll)
+sImage = pygame.transform.scale(sImage,(windowWidth*.30,windowHeight*.50))
+sRect = sImage.get_rect(midright=(windowWidth,windowHeight-windowHeight*.25))
+
 def letter_choice():
     folder = "Game_Engine/letters"
 
@@ -119,15 +91,13 @@ def letter_choice():
     handRect = handImage.get_rect(center =(windowWidth//2,windowHeight//2))
     screen.blit(handImage,handRect)
 
-
     print(file)
         
 
 start_time = pygame.time.get_ticks()
 duration = 3000 
 
-spritenum = 0
-dir = "back"
+customer = Customer()
 
 running = True
 while running:
@@ -140,8 +110,8 @@ while running:
     screen.blit(image, rect)
     screen.blit(sImage,sRect)
     letter_choice()
-    walksprite(dir, windowWidth//3, windowHeight//3, spritenum)
-    spritenum = (spritenum + 1) % 4
+    customer.animate(5)
+    customer.draw()
     pygame.display.update()
 
 pygame.quit()
