@@ -53,10 +53,10 @@ class Customer():
 
     def move(self):
         if self.dir == "forward":
-            self.ypos += 20
+            self.ypos += 5
         else:
-            self.ypos -= 20
-        self.rect = self.image.get_rect(center=(windowWidth//2, windowHeight - self.ypos))
+            self.ypos -= 5
+        self.rect = self.image.get_rect(center=(windowWidth//2, windowHeight + self.ypos))
     
     def draw(self):
         screen.blit(self.image, self.rect)
@@ -82,6 +82,8 @@ currentWindow = pygame.display.Info()
 windowHeight, windowWidth = currentWindow.current_h, currentWindow.current_w
 screen = pygame.display.set_mode((windowWidth, windowHeight-60), pygame.SCALED)
 
+
+
 background = "Game_Engine/tavern.jpg"
 image = pygame.image.load(background)
 image = pygame.transform.scale(image,(windowWidth, windowHeight-60))
@@ -100,10 +102,9 @@ def letter_choice():
     file = random.choice(folder_list)
     full_path =  os.path.join(folder,file)
     handImage = pygame.image.load(f"{full_path}")
-    handImage = pygame.transform.scale(handImage, (100,100))
-    handRect = handImage.get_rect(center =(windowWidth//2,windowHeight//2))
+    handImage = pygame.transform.scale(handImage, (300,300))
+    handRect = handImage.get_rect(center =(windowWidth- windowWidth*.15,(windowHeight-windowHeight*.25)))
     screen.blit(handImage,handRect)
-
 
     print(file)
         
@@ -136,8 +137,9 @@ while running:
     screen.blit(image, rect)
     screen.blit(sImage,sRect)
     letter_choice()
-    walksprite(dir, windowWidth//3, windowHeight//3, spritenum)
-    spritenum = (spritenum + 1) % 4
+    customer.animate(5)
+    customer.move()
+    customer.draw()
     pygame.display.update()
 
 pygame.quit()
