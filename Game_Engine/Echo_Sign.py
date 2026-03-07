@@ -1,80 +1,18 @@
 import pygame
 import random
 import os
+import queue
+import threading 
+import sys 
+# sys.path.append("Core_cv")
+# from handTracking import run_vision
+
 
 pygame.init()
-
 clock = pygame.time.Clock()
 
-# class Player():
-#     def __init__(self):
-#         self.health = 100
-#         self.attack_power = 3
-#         self.speed = 5
-#         self.level = 0
-
-#         self.animations = {}
-#         self.animation = "Idle"
-#         self.current_frame = 0
-#         self.animationTimer = 0
-
-#         self.load_images()
-
-#         self.image = self.animations[self.animation][0]
-#         self.rect = self.image.get_rect(center=(wW//2, wH//2))
-#         self.flipped = False
-#         self.facingLeft = False
-
-#         self.slash = pygame.image.load("slash.png")
-#         self.slashRect = None
-
-#         self.attacking = False
-
-       
-#     def load_images(self):
-#         folder = "Knight_1"
-
-#         for subfolder in os.listdir(folder):
-#             subfolderPath = os.path.join(folder, subfolder)
-
-#             if os.path.isdir(subfolderPath):
-#                 sprite_frames = []
-#                 for file in sorted(os.listdir(subfolderPath)):
-#                     full_path = os.path.join(subfolderPath, file)
-#                     image = pygame.image.load(full_path).convert_alpha()
-#                     sprite_frames.append(image)
-
-#                 self.animations[subfolder] = sprite_frames
-        
-        
-
-#     def animate(self, dt):
-#         frameSpeed = 100
-#         frames = self.animations[self.animation]
-
-#         self.animationTimer += dt
-
-#         if self.animationTimer >= frameSpeed:
-#             self.animationTimer = 0
-#             self.current_frame = (self.current_frame + 1) % len(frames)
-#             self.image = frames[self.current_frame]
-        
-#         if self.animation.startswith("Attack"):
-#             self.attacking = False
-#             self.slashRect = None
-        
-#     def flip_animation(self):
-#              for animation_name in self.animations:
-#                 flipped_frames = []
-#                 for frame in self.animations[animation_name]:
-#                     flipped = pygame.transform.flip(frame, True, False)
-#                     flipped_frames.append(flipped)
-
-#                 self.animations[animation_name] = flipped_frames
-
-#     def draw(self):
-#         screen.blit(self.image, self.rect)
-
+start_time = pygame.time.get_ticks()
+duration = 3000 
 
 currentWindow = pygame.display.Info()
 windowHeight, windowWidth = currentWindow.current_h, currentWindow.current_w
@@ -108,40 +46,61 @@ def walksprite(dir, posx, posy, spritenum):
     handRect = handImage.get_rect(center =(posx,posy))
     screen.blit(handImage,handRect)
 
-def letter_choice():
-    folder = "Game_Engine/letters"
-
-    folder_list = os.listdir(folder)
-    file = random.choice(folder_list)
-    full_path =  os.path.join(folder,file)
-    handImage = pygame.image.load(f"{full_path}")
-    handImage = pygame.transform.scale(handImage, (100,100))
-    handRect = handImage.get_rect(center =(windowWidth//2,windowHeight//2))
-    screen.blit(handImage,handRect)
 
 
-    print(file)
-        
+# recived_queue = queue.Queue(maxsize=1)
+# target_queue = queue.Queue(maxsize=1)
 
-start_time = pygame.time.get_ticks()
-duration = 3000 
+
+
+# target_queue.put("A")
+
+
+
+# def letter_choice():
+#     folder = "Game_Engine/letters"
+
+#     folder_list = os.listdir(folder)
+#     file = random.choice(folder_list)
+#     full_path =  os.path.join(folder,file)
+#     handImage = pygame.image.load(f"{full_path}")
+#     handImage = pygame.transform.scale(handImage, (100,100))
+#     handRect = handImage.get_rect(center =(windowWidth//2,windowHeight//2))
+#     screen.blit(handImage,handRect)
+
+# hand_tracking = threading.Thread(target=run_vision, args=(target_queue,recived_queue), daemon=True)
+# hand_tracking.start()        
 
 spritenum = 0
-dir = "back"
+dir = "forward"
 
 running = True
 while running:
+    clock.tick(60)
+    currentTime = pygame.time.get_ticks()
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+
+        # try:
+        #     correct_sign = recived_queue.get_nowait()
+
+        #     if correct_sign == "A":
+        #         print("you made and A")
+
+        #         target_queue.put("A")
+        # except queue.Empty:
+        #     pass
 
     
     screen.fill((0, 0, 0))
     screen.blit(image, rect)
     screen.blit(sImage,sRect)
-    letter_choice()
+    # letter_choice()
+    # run_vision(target_queue, recived_queue)
     walksprite(dir, windowWidth//3, windowHeight//3, spritenum)
     spritenum = (spritenum + 1) % 4
     pygame.display.update()
 
 pygame.quit()
+
