@@ -122,11 +122,12 @@ def Menus():
         screen.blit(return_text, return_rect)
     else:
         pygame.mixer.Sound.play(music)
+
         screen.fill((0, 0, 0))
         screen.blit(image, rect)
         screen.blit(bImage,bRect)
         screen.blit(sImage,sRect)
-
+        pygame.draw.rect(screen, (0,0,0),(20,20,340,260))
         screen.blit(current_letter_image, handRect)
 
         if latest_camera_frame is not None:
