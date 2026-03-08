@@ -39,7 +39,7 @@ def run_vision(target_queue, result_queue, frame_queue):
             12: {'x': 0.842, 'y': -0.663, 'z': -0.098}, 
             16: {'x': 0.813, 'y': -0.617, 'z': -0.126}, 
             20: {'x': 0.776, 'y': -0.725, 'z': -0.195},
-            "error_threshold": 2.3  ### FIX THIS BASED ON TESTING 
+            "error_threshold": 2.6  ### FIX THIS BASED ON TESTING 
         }, "E": {
             4:  {'x': 0.231, 'y': -0.818, 'z': -0.222}, 
             8:  {'x': 0.395, 'y': -0.902, 'z': -0.264},
@@ -67,7 +67,7 @@ def run_vision(target_queue, result_queue, frame_queue):
             12: {'x': 1.869, 'y': -0.553, 'z': -0.037}, 
             16: {'x': 0.985, 'y': -0.228, 'z': 0.046}, 
             20: {'x': 0.923, 'y': 0.016, 'z': 0.093},
-                "error_threshold": 1.5 ## Fix this based on testing
+                "error_threshold": 1.9 ## Fix this based on testing
         }, "I": {
             4:  {'x': 0.191, 'y': -1.146, 'z': -0.222}, 
             8:  {'x': 0.340, 'y': -0.866, 'z': -0.218}, 
@@ -118,14 +118,14 @@ def run_vision(target_queue, result_queue, frame_queue):
             12: {'x': 0.950, 'y': -0.098, 'z': -0.505}, 
             16: {'x': 0.405, 'y': -0.125, 'z': -0.325}, 
             20: {'x': 0.355, 'y': -0.055, 'z': -0.470},
-            "error_threshold": 1.95  
+            "error_threshold": 2.3 
         }, "Q": {
             4:  {'x': 1.125, 'y': -0.320, 'z': -0.125}, 
             8:  {'x': 1.285, 'y': -0.560, 'z': -0.230}, 
             12: {'x': 0.665, 'y': -0.340, 'z': -0.270}, 
             16: {'x': 0.580, 'y': -0.220, 'z': -0.230}, 
             20: {'x': 0.535, 'y': -0.140, 'z': -0.295},
-            "error_threshold": 1.85
+            "error_threshold": 2.0
         }, "R": {
             4:  {'x': 0.193, 'y': -0.895, 'z': -0.332}, 
             8:  {'x': 0.191, 'y': -1.716, 'z': -0.336}, 
