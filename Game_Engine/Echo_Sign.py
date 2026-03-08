@@ -144,6 +144,7 @@ def Menus():
         if random.randint(0,150) == 50 or customerQueue < 2:
             customerArray.append(Customer(get_new_letter(), customerQueue))
             customerQueue += 1
+        render_letter(current_letter_name, handRect)
         
 
 background = "Game_Engine/tavern.jpg"
@@ -167,14 +168,16 @@ def get_new_letter_image(letter):
     target_name = letter[0]
     full_path =  os.path.join(folder,file)
     
-    # sign_letter = font.render(f"{letter}", True, (0,0,0))
-    # sign_letter_rect = sign_letter.get_rect(topmid =(handRect.x,handRect.y))
-    # screen.blit(sign_letter, sign_letter_rect)
-    
     handImage = pygame.image.load(f"{full_path}")
     handImage = pygame.transform.scale(handImage, (300,300))
 
     return target_name, handImage
+
+def render_letter(letter, handRect):
+    sign_letter = font.render(f"{letter}", True, (0,0,0))
+    
+    sign_letter_rect = sign_letter.get_rect(center =(handRect.x + 150,handRect.y + 275))
+    screen.blit(sign_letter, sign_letter_rect)
 
 def get_new_letter():
     return random.choice("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
@@ -196,6 +199,7 @@ customerArray.append(Customer(current_letter_name, customerQueue))
 customerQueue += 1
 target_queue.put(current_letter_name) # Send the first target to the vision thread
 handRect = current_letter_image.get_rect(center =(windowWidth- windowWidth*.15,(windowHeight-windowHeight*.25)))
+render_letter(current_letter_name, handRect)
 latest_camera_frame = None 
 
 running = True
