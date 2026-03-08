@@ -123,6 +123,7 @@ def Menus():
         pygame.mixer.Sound.play(music)
         screen.fill((0, 0, 0))
         screen.blit(image, rect)
+        screen.blit(bImage,bRect)
         screen.blit(sImage,sRect)
 
         screen.blit(current_letter_image, handRect)
@@ -150,6 +151,10 @@ image = pygame.image.load(background)
 image = pygame.transform.scale(image,(windowWidth, windowHeight-60))
 rect = image.get_rect(midtop = (windowWidth//2,0))
 
+bartender = "Game_Engine/Plant2_Idle.png"
+bImage = pygame.image.load(bartender)
+bImage = pygame.transform.scale(bImage,(102, 114))
+bRect = bImage.get_rect(midtop = (windowWidth//2 - 65,55))
 
 scroll = "Game_Engine/scroll.png"
 sImage = pygame.image.load(scroll)
