@@ -19,6 +19,7 @@ class Customer():
         self.animationTimer = 0
         self.ypos = 100
         self.waiting = False
+        self.queuenum = 0
 
         self.load_images() 
 
@@ -48,23 +49,32 @@ class Customer():
 
         self.animationTimer += dt
 
-        if (windowHeight + self.ypos) > (windowHeight // 4):
+        if self.waiting == False or (windowHeight + self.ypos) > (windowHeight // 4 + (self.queuenum * 70)):
             self.move()
 
             if self.animationTimer >= frameSpeed:
                 self.animationTimer = 0
                 self.current_frame = (self.current_frame + 1) % len(frames)
                 self.image = frames[self.current_frame]
+            if ((windowHeight + self.ypos) < (windowHeight // 4 + (self.queuenum * 70))):
+                self.waiting = True
         else:
             self.image = frames[0]
-            self.waiting = True
 
     def move(self):
         if self.dir == "forward":
-            self.ypos += 2
+            self.ypos += 3
+            self.rect = self.image.get_rect(center=(windowWidth//2, windowHeight + self.ypos))
         else:
-            self.ypos -= 2
-        self.rect = self.image.get_rect(center=(windowWidth//2, windowHeight + self.ypos))
+            self.ypos -= 3
+            self.rect = self.image.get_rect(center=(windowWidth//2 - 70, windowHeight + self.ypos))
+    
+    def finished(self):
+        self.dir = "forward"
+        self.waiting = False
+    
+    def queueReduce(self):
+        self.queuenum -= 1
     
     def draw(self):
         screen.blit(self.image, self.rect)
@@ -103,7 +113,10 @@ def letter_choice():
 start_time = pygame.time.get_ticks()
 duration = 3000 
 
-customer = Customer()
+customerArray = []
+customerArray.append(Customer())
+customerArray.append(Customer())
+customerArray[1].queuenum = 1
 
 running = True
 while running:
@@ -128,8 +141,13 @@ while running:
     screen.blit(image, rect)
     screen.blit(sImage,sRect)
     letter_choice()
-    customer.animate(10)
-    customer.draw()
+    for customer in customerArray:
+        customer.animate(10)
+        customer.draw()
+    if customerArray[0].waiting == True and customerArray[0].dir == "back":
+        customerArray[0].finished()
+        for customer in customerArray[1:]:
+            customer.queueReduce()
     pygame.display.update()
 
 pygame.quit()
