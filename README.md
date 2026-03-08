@@ -13,3 +13,11 @@ Ensure you have Python 3.13 installed. You will need the following libraries:
 
 ```bash
 pip install pygame opencv-python mediapipe numpy
+```
+## Credits:
+
+https://craftpix.net
+https://eeveeexpo.com/resources/1609/
+https://www.youtube.com/watch?v=LnmY5Rgpb1Y&list=RD4WIMyqBG9gs&index=11
+https://www.pngegg.com/en/png-ebtas
+https://glazermuseum.org/signlanguageabcs/
