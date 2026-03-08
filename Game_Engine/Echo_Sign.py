@@ -13,7 +13,7 @@ customerQueue = 0
 currentCustomer = 0
 
 pygame.init()
-music = pygame.mixer.Sound("Game_Engine/Tavern_music.wav")
+music = pygame.mixer.Sound("Game_Engine/Music.wav")
 clock = pygame.time.Clock()
 
 class Customer():
@@ -120,7 +120,7 @@ def Menus():
         return_rect = return_text.get_rect(center = (windowWidth//2, (windowHeight//2)+50))
         screen.blit(return_text, return_rect)
     else:
-        pygame.mixer.Sound.play
+        pygame.mixer.Sound.play(music)
         screen.fill((0, 0, 0))
         screen.blit(image, rect)
         screen.blit(sImage,sRect)
@@ -207,7 +207,7 @@ while running:
         correct_sign = result_queue.get_nowait()
 
         if correct_sign == current_letter_name:
-            print(f"you made an {correct_sign}!")
+            # print(f"you made an {correct_sign}!")
             customerArray[currentCustomer].finished()
             currentCustomer += 1
             customerQueue -= 1
@@ -227,29 +227,6 @@ while running:
         pass
 
     Menus()
-
-    # screen.fill((0, 0, 0))
-    # screen.blit(image, rect)
-    # screen.blit(sImage,sRect)
-
-    # screen.blit(current_letter_image, handRect)
-
-    # if latest_camera_frame is not None:
-    #     # Draw it in the top left corner (x=20, y=20)
-    #     screen.blit(latest_camera_frame, (20, 20))
-
-    # for customer in customerArray:
-    #     customer.animate(dt)
-    #     customer.draw()
-
-    # if customerArray[0].ypos > windowHeight:
-    #         del customerArray[0]
-    #         currentCustomer -= 1
-
-
-    # if random.randint(0,150) == 50 or customerQueue < 2:
-    #     customerArray.append(Customer(get_new_letter(), customerQueue))
-    #     customerQueue += 1
 
     pygame.display.update()
 

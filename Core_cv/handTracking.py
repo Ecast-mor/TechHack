@@ -276,10 +276,10 @@ def run_vision(target_queue, result_queue, frame_queue):
         error_threshold = aslDict[target_sign]["error_threshold"]  
 
         if total_error < error_threshold:
-            print(f"Sign '{target_sign}' detected with total error: {total_error:.3f}")
+            # print(f"Sign '{target_sign}' detected with total error: {total_error:.3f}")
             return True
         else:
-            print(f"Total error for '{target_sign}': {total_error:.3f} (threshold: {error_threshold})")
+            # print(f"Total error for '{target_sign}': {total_error:.3f} (threshold: {error_threshold})")
             return False
 
     # 1. Setup the new Tasks API classes
@@ -404,7 +404,7 @@ def run_vision(target_queue, result_queue, frame_queue):
                         counter = 0
 
                     if counter >= 5:
-                        print(f"Success '{target_sign}' Detected! Passing to Pygames")
+                        # print(f"Success '{target_sign}' Detected! Passing to Pygames")
                         result_queue.put(target_sign)
                         waiting_for_new_target = True
                         counter = 0              
