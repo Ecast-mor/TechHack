@@ -161,6 +161,11 @@ def get_new_letter_image(letter):
     file = letter.lower() + ".png"
     target_name = letter[0]
     full_path =  os.path.join(folder,file)
+    
+    # sign_letter = font.render(f"{letter}", True, (0,0,0))
+    # sign_letter_rect = sign_letter.get_rect(topmid =(handRect.x,handRect.y))
+    # screen.blit(sign_letter, sign_letter_rect)
+    
     handImage = pygame.image.load(f"{full_path}")
     handImage = pygame.transform.scale(handImage, (300,300))
 
