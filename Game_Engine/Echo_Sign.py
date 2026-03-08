@@ -73,6 +73,41 @@ currentWindow = pygame.display.Info()
 windowHeight, windowWidth = currentWindow.current_h, currentWindow.current_w
 screen = pygame.display.set_mode((windowWidth, windowHeight-60), pygame.SCALED)
 
+start = False
+pause = False
+
+font = pygame.font.SysFont(None, 50)
+def Menus():
+    if start == False:
+        pygame.draw.rect(screen, (173, 216, 230), (0, 0, windowWidth,windowHeight))
+
+        title = font.render("ECHO SIGN", True, (0,0,0))
+        title_rect = title.get_rect(center=(windowWidth//2, (windowHeight//2)-50))
+        screen.blit(title,title_rect)
+        start_text = font.render("Press Space to Start", True, (0,0,0))
+        start_text_rect = start_text.get_rect(center = (windowWidth//2, windowHeight//2))
+        screen.blit(start_text,start_text_rect)
+
+    elif pause == True:
+        pygame.draw.rect(screen, (173, 216, 230), (0, 0, windowWidth,windowHeight))
+        paused = font.render("YOU ARE", True, (0,0,0))
+        paused_rect = paused.get_rect(center=(windowWidth//2, (windowHeight//2)-50))
+        screen.blit(paused,paused_rect)
+        pause_under = font.render("CURRENTLY PAUSED", True, (0,0,0))
+        pause_under_rect = pause_under.get_rect(center = (windowWidth//2, windowHeight//2))
+        screen.blit(pause_under,pause_under_rect)
+        
+        return_text = font.render("HIT ESCAPE TO RETURN",True, (0,0,0))
+        return_rect = return_text.get_rect(center = (windowWidth//2, (windowHeight//2)+50))
+        screen.blit(return_text, return_rect)
+    else:
+        screen.fill((0, 0, 0))
+        screen.blit(image, rect)
+        screen.blit(sImage,sRect)
+        letter_choice()
+        customer.animate(10)
+        customer.draw()
+
 
 
 background = "Game_Engine/tavern.jpg"
@@ -112,6 +147,13 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE and start == False:
+                start = True
+            if event.key == pygame.K_p and pause == False:
+                pause = True
+            if event.key == pygame.K_ESCAPE and pause == True:
+                pause = False
 
         # try:
         #     correct_sign = recived_queue.get_nowait()
@@ -123,13 +165,7 @@ while running:
         # except queue.Empty:
         #     pass
 
-    
-    screen.fill((0, 0, 0))
-    screen.blit(image, rect)
-    screen.blit(sImage,sRect)
-    letter_choice()
-    customer.animate(10)
-    customer.draw()
+    Menus()
     pygame.display.update()
 
 pygame.quit()
