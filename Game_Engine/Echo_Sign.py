@@ -8,6 +8,10 @@ sys.path.append("Core_cv")
 from handTracking import run_vision
 
 
+customerArray = []
+customerQueue = 0
+currentCustomer = 0
+
 pygame.init()
 clock = pygame.time.Clock()
 
@@ -84,7 +88,60 @@ currentWindow = pygame.display.Info()
 windowHeight, windowWidth = currentWindow.current_h, currentWindow.current_w
 screen = pygame.display.set_mode((windowWidth, windowHeight-60), pygame.SCALED)
 
+font = pygame.font.Font(None, 50)
+start = False
+pause = False
 
+def Menus():
+    global customerArray
+    global customerQueue
+    global currentCustomer
+    if start == False:
+        pygame.draw.rect(screen, (173, 216, 230), (0, 0, windowWidth,windowHeight))
+
+        title = font.render("ECHO SIGN", True, (0,0,0))
+        title_rect = title.get_rect(center=(windowWidth//2, (windowHeight//2)-50))
+        screen.blit(title,title_rect)
+        start_text = font.render("Press Space to Start", True, (0,0,0))
+        start_text_rect = start_text.get_rect(center = (windowWidth//2, windowHeight//2))
+        screen.blit(start_text,start_text_rect)
+
+    elif pause == True:
+        pygame.draw.rect(screen, (173, 216, 230), (0, 0, windowWidth,windowHeight))
+        paused = font.render("YOU ARE", True, (0,0,0))
+        paused_rect = paused.get_rect(center=(windowWidth//2, (windowHeight//2)-50))
+        screen.blit(paused,paused_rect)
+        pause_under = font.render("CURRENTLY PAUSED", True, (0,0,0))
+        pause_under_rect = pause_under.get_rect(center = (windowWidth//2, windowHeight//2))
+        screen.blit(pause_under,pause_under_rect)
+        
+        return_text = font.render("HIT ESCAPE TO RETURN",True, (0,0,0))
+        return_rect = return_text.get_rect(center = (windowWidth//2, (windowHeight//2)+50))
+        screen.blit(return_text, return_rect)
+    else:
+        screen.fill((0, 0, 0))
+        screen.blit(image, rect)
+        screen.blit(sImage,sRect)
+
+        screen.blit(current_letter_image, handRect)
+
+        if latest_camera_frame is not None:
+            # Draw it in the top left corner (x=20, y=20)
+            screen.blit(latest_camera_frame, (20, 20))
+
+        for customer in customerArray:
+            customer.animate(dt)
+            customer.draw()
+
+        if customerArray[0].ypos > windowHeight:
+                del customerArray[0]
+                currentCustomer -= 1
+
+
+        if random.randint(0,150) == 50 or customerQueue < 2:
+            customerArray.append(Customer(get_new_letter(), customerQueue))
+            customerQueue += 1
+        
 
 background = "Game_Engine/tavern.jpg"
 image = pygame.image.load(background)
@@ -96,17 +153,6 @@ scroll = "Game_Engine/scroll.png"
 sImage = pygame.image.load(scroll)
 sImage = pygame.transform.scale(sImage,(windowWidth*.30,windowHeight*.50))
 sRect = sImage.get_rect(midright=(windowWidth,windowHeight-windowHeight*.25))
-
-# def get_new_letter_image():
-#     folder = "Game_Engine/letters"
-#     folder_list = os.listdir(folder)
-#     file = random.choice(folder_list)
-#     target_name = file.split('.')[0].upper()
-#     full_path =  os.path.join(folder,file)
-#     handImage = pygame.image.load(f"{full_path}")
-#     handImage = pygame.transform.scale(handImage, (300,300))
-
-#     return target_name, handImage
 
 def get_new_letter_image(letter):
     folder = "Game_Engine/letters"
@@ -132,10 +178,6 @@ vision_thread.start()
 
 start_time = pygame.time.get_ticks()
 duration = 3000 
-
-customerArray = []
-customerQueue = 0
-currentCustomer = 0
 
 current_letter_name, current_letter_image = get_new_letter_image(get_new_letter()) # Load the first letter before the loop starts
 customerArray.append(Customer(current_letter_name, customerQueue))
@@ -181,29 +223,30 @@ while running:
     except queue.Empty:
         pass
 
-    
-    screen.fill((0, 0, 0))
-    screen.blit(image, rect)
-    screen.blit(sImage,sRect)
+    Menus()
 
-    screen.blit(current_letter_image, handRect)
+    # screen.fill((0, 0, 0))
+    # screen.blit(image, rect)
+    # screen.blit(sImage,sRect)
 
-    if latest_camera_frame is not None:
-        # Draw it in the top left corner (x=20, y=20)
-        screen.blit(latest_camera_frame, (20, 20))
+    # screen.blit(current_letter_image, handRect)
 
-    for customer in customerArray:
-        customer.animate(dt)
-        customer.draw()
+    # if latest_camera_frame is not None:
+    #     # Draw it in the top left corner (x=20, y=20)
+    #     screen.blit(latest_camera_frame, (20, 20))
 
-    if customerArray[0].ypos > windowHeight:
-            del customerArray[0]
-            currentCustomer -= 1
+    # for customer in customerArray:
+    #     customer.animate(dt)
+    #     customer.draw()
+
+    # if customerArray[0].ypos > windowHeight:
+    #         del customerArray[0]
+    #         currentCustomer -= 1
 
 
-    if random.randint(0,150) == 50 or customerQueue < 2:
-        customerArray.append(Customer(get_new_letter(), customerQueue))
-        customerQueue += 1
+    # if random.randint(0,150) == 50 or customerQueue < 2:
+    #     customerArray.append(Customer(get_new_letter(), customerQueue))
+    #     customerQueue += 1
 
     pygame.display.update()
 
