@@ -109,6 +109,54 @@ def get_new_letter_image():
     print(file)
     return target_name, handImage
 
+font = pygame.font.Font(None, 50)
+start = False
+pause = False
+def Menus():
+    if start == False:
+        pygame.draw.rect(screen, (173, 216, 230), (0, 0, windowWidth,windowHeight))
+
+        title = font.render("ECHO SIGN", True, (0,0,0))
+        title_rect = title.get_rect(center=(windowWidth//2, (windowHeight//2)-50))
+        screen.blit(title,title_rect)
+        start_text = font.render("Press Space to Start", True, (0,0,0))
+        start_text_rect = start_text.get_rect(center = (windowWidth//2, windowHeight//2))
+        screen.blit(start_text,start_text_rect)
+
+    elif pause == True:
+        pygame.draw.rect(screen, (173, 216, 230), (0, 0, windowWidth,windowHeight))
+        paused = font.render("YOU ARE", True, (0,0,0))
+        paused_rect = paused.get_rect(center=(windowWidth//2, (windowHeight//2)-50))
+        screen.blit(paused,paused_rect)
+        pause_under = font.render("CURRENTLY PAUSED", True, (0,0,0))
+        pause_under_rect = pause_under.get_rect(center = (windowWidth//2, windowHeight//2))
+        screen.blit(pause_under,pause_under_rect)
+        
+        return_text = font.render("HIT ESCAPE TO RETURN",True, (0,0,0))
+        return_rect = return_text.get_rect(center = (windowWidth//2, (windowHeight//2)+50))
+        screen.blit(return_text, return_rect)
+    else:
+        screen.fill((0, 0, 0))
+        screen.blit(image, rect)
+        screen.blit(sImage,sRect)
+
+        screen.blit(current_letter_image, handRect)
+
+        customerArray[0].animate(dt)
+        customerArray[0].draw()
+
+        if latest_camera_frame is not None:
+            # Draw it in the top left corner (x=20, y=20)
+            screen.blit(latest_camera_frame, (20, 20))
+
+        for customer in customerArray:
+            customer.animate(10)
+            customer.draw()
+        if customerArray[0].waiting == True and customerArray[0].dir == "back":
+            customerArray[0].finished()
+            for customer in customerArray[1:]:
+                customer.queueReduce()
+
 target_queue = queue.Queue()
 result_queue = queue.Queue()
 frame_queue = queue.Queue(maxsize=30) 
@@ -137,7 +185,13 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE and start == False:
+                start = True
+            if event.key == pygame.K_p and pause == False:
+                pause = True
+            if event.key == pygame.K_ESCAPE and pause == True:
+                pause = False
     try:
         correct_sign = result_queue.get_nowait()
 
@@ -156,27 +210,7 @@ while running:
     except queue.Empty:
         pass
 
-    
-    screen.fill((0, 0, 0))
-    screen.blit(image, rect)
-    screen.blit(sImage,sRect)
-
-    screen.blit(current_letter_image, handRect)
-
-    customerArray[0].animate(dt)
-    customerArray[0].draw()
-
-    if latest_camera_frame is not None:
-        # Draw it in the top left corner (x=20, y=20)
-        screen.blit(latest_camera_frame, (20, 20))
-
-    for customer in customerArray:
-        customer.animate(10)
-        customer.draw()
-    if customerArray[0].waiting == True and customerArray[0].dir == "back":
-        customerArray[0].finished()
-        for customer in customerArray[1:]:
-            customer.queueReduce()
+    Menus()
     pygame.display.update()
 
 pygame.quit()
