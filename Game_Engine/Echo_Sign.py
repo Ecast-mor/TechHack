@@ -151,7 +151,13 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE and start == False:
+                start = True
+            if event.key == pygame.K_p and pause == False:
+                pause = True
+            if event.key == pygame.K_ESCAPE and pause == True:
+                pause = False
     try:
         correct_sign = result_queue.get_nowait()
 
