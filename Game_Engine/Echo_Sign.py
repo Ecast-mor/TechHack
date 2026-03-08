@@ -13,6 +13,7 @@ customerQueue = 0
 currentCustomer = 0
 
 pygame.init()
+music = pygame.mixer.Sound("Game_Engine/Tavern_music.wav")
 clock = pygame.time.Clock()
 
 class Customer():
@@ -98,7 +99,6 @@ def Menus():
     global currentCustomer
     if start == False:
         pygame.draw.rect(screen, (173, 216, 230), (0, 0, windowWidth,windowHeight))
-
         title = font.render("ECHO SIGN", True, (0,0,0))
         title_rect = title.get_rect(center=(windowWidth//2, (windowHeight//2)-50))
         screen.blit(title,title_rect)
@@ -107,6 +107,7 @@ def Menus():
         screen.blit(start_text,start_text_rect)
 
     elif pause == True:
+        pygame.mixer.pause()
         pygame.draw.rect(screen, (173, 216, 230), (0, 0, windowWidth,windowHeight))
         paused = font.render("YOU ARE", True, (0,0,0))
         paused_rect = paused.get_rect(center=(windowWidth//2, (windowHeight//2)-50))
@@ -119,6 +120,7 @@ def Menus():
         return_rect = return_text.get_rect(center = (windowWidth//2, (windowHeight//2)+50))
         screen.blit(return_text, return_rect)
     else:
+        pygame.mixer.Sound.play
         screen.fill((0, 0, 0))
         screen.blit(image, rect)
         screen.blit(sImage,sRect)
@@ -199,6 +201,7 @@ while running:
             if event.key == pygame.K_p and pause == False:
                 pause = True
             if event.key == pygame.K_ESCAPE and pause == True:
+                pygame.mixer.unpause()
                 pause = False
     try:
         correct_sign = result_queue.get_nowait()
