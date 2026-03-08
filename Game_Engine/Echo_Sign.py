@@ -69,10 +69,10 @@ class Customer():
 
     def move(self):
         if self.dir == "forward":
-            self.ypos += 3
+            self.ypos += 5
             self.rect = self.image.get_rect(center=(windowWidth//2, windowHeight + self.ypos))
         else:
-            self.ypos -= 3
+            self.ypos -= 5
             self.rect = self.image.get_rect(center=(windowWidth//2 - 70, windowHeight + self.ypos))
     
     def finished(self):
@@ -99,9 +99,10 @@ def Menus():
     global currentCustomer
     if start == False:
         pygame.draw.rect(screen, (173, 216, 230), (0, 0, windowWidth,windowHeight))
-        title = font.render("ECHO SIGN", True, (0,0,0))
-        title_rect = title.get_rect(center=(windowWidth//2, (windowHeight//2)-50))
-        screen.blit(title,title_rect)
+        logo = pygame.image.load("Game_Engine/ECHO_SIGN.png") 
+        logoRect = logo.get_rect(center = (windowWidth//2, windowHeight//4))
+        screen.blit(logo, logoRect)
+
         start_text = font.render("Press Space to Start", True, (0,0,0))
         start_text_rect = start_text.get_rect(center = (windowWidth//2, windowHeight//2))
         screen.blit(start_text,start_text_rect)
@@ -141,7 +142,7 @@ def Menus():
                 currentCustomer -= 1
 
 
-        if random.randint(0,150) == 50 or customerQueue < 2:
+        if (random.randint(0,150) == 50 or customerQueue < 2) and customerQueue < 12 :
             customerArray.append(Customer(get_new_letter(), customerQueue))
             customerQueue += 1
         render_letter(current_letter_name, handRect)
