@@ -12,14 +12,15 @@ pygame.init()
 clock = pygame.time.Clock()
 
 class Customer():
-    def __init__(self):
+    def __init__(self, letter, queuenum):
         self.animations = {}
         self.dir = "back"
         self.current_frame = 0
         self.animationTimer = 0
         self.ypos = 100
         self.waiting = False
-        self.queuenum = 0
+        self.queuenum = queuenum
+        self.letter = letter
 
         self.load_images() 
 
@@ -96,18 +97,29 @@ sImage = pygame.image.load(scroll)
 sImage = pygame.transform.scale(sImage,(windowWidth*.30,windowHeight*.50))
 sRect = sImage.get_rect(midright=(windowWidth,windowHeight-windowHeight*.25))
 
-def get_new_letter_image():
+# def get_new_letter_image():
+#     folder = "Game_Engine/letters"
+#     folder_list = os.listdir(folder)
+#     file = random.choice(folder_list)
+#     target_name = file.split('.')[0].upper()
+#     full_path =  os.path.join(folder,file)
+#     handImage = pygame.image.load(f"{full_path}")
+#     handImage = pygame.transform.scale(handImage, (300,300))
+
+#     return target_name, handImage
+
+def get_new_letter_image(letter):
     folder = "Game_Engine/letters"
-    folder_list = os.listdir(folder)
-    file = random.choice(folder_list)
-    target_name = file.split('.')[0].upper()
+    file = letter.lower() + ".png"
+    target_name = letter[0]
     full_path =  os.path.join(folder,file)
     handImage = pygame.image.load(f"{full_path}")
     handImage = pygame.transform.scale(handImage, (300,300))
-    
 
-    print(file)
     return target_name, handImage
+
+def get_new_letter():
+    return random.choice("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
 target_queue = queue.Queue()
 result_queue = queue.Queue()
@@ -118,17 +130,19 @@ vision_thread.daemon = True
 vision_thread.start()
 
 
-
 start_time = pygame.time.get_ticks()
 duration = 3000 
 
 customerArray = []
-customerArray.append(Customer())
-current_letter_name, current_letter_image = get_new_letter_image() # Load the first letter before the loop starts
+customerQueue = 0
+currentCustomer = 0
+
+current_letter_name, current_letter_image = get_new_letter_image(get_new_letter()) # Load the first letter before the loop starts
+customerArray.append(Customer(current_letter_name, customerQueue))
+customerQueue += 1
 target_queue.put(current_letter_name) # Send the first target to the vision thread
 handRect = current_letter_image.get_rect(center =(windowWidth- windowWidth*.15,(windowHeight-windowHeight*.25)))
 latest_camera_frame = None 
-
 
 running = True
 while running:
@@ -143,9 +157,14 @@ while running:
 
         if correct_sign == current_letter_name:
             print(f"you made an {correct_sign}!")
-            current_letter_name, current_letter_image = get_new_letter_image()
+            customerArray[currentCustomer].finished()
+            currentCustomer += 1
+            customerQueue -= 1
+            for customer in customerArray[currentCustomer:]:
+                customer.queueReduce()
+            current_letter_name, current_letter_image = get_new_letter_image(customerArray[currentCustomer].letter)
             handRect = current_letter_image.get_rect(center =(windowWidth- windowWidth*.15,(windowHeight-windowHeight*.25)))
-            target_queue.put(current_letter_name)
+            target_queue.put(customerArray[currentCustomer].letter)
     except queue.Empty:
         pass
         
@@ -163,20 +182,23 @@ while running:
 
     screen.blit(current_letter_image, handRect)
 
-    customerArray[0].animate(dt)
-    customerArray[0].draw()
-
     if latest_camera_frame is not None:
         # Draw it in the top left corner (x=20, y=20)
         screen.blit(latest_camera_frame, (20, 20))
 
     for customer in customerArray:
-        customer.animate(10)
+        customer.animate(dt)
         customer.draw()
-    if customerArray[0].waiting == True and customerArray[0].dir == "back":
-        customerArray[0].finished()
-        for customer in customerArray[1:]:
-            customer.queueReduce()
+
+    if customerArray[0].ypos > windowHeight:
+            del customerArray[0]
+            currentCustomer -= 1
+
+
+    if random.randint(0,150) == 50 or customerQueue < 2:
+        customerArray.append(Customer(get_new_letter(), customerQueue))
+        customerQueue += 1
+
     pygame.display.update()
 
 pygame.quit()
